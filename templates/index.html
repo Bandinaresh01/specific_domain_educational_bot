@@ -1,0 +1,102 @@
+pip install flask-cors<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Educational Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #chatbox {
+            width: 100%;
+            height: 400px;
+            border: 1px solid #ccc;
+            overflow-y: scroll;
+            padding: 10px;
+            margin-bottom: 10px;
+            white-space: pre-wrap;
+            background-color: #f9f9f9;
+        }
+        #queryInput {
+            width: 80%;
+            padding: 8px;
+        }
+        #sendBtn {
+            padding: 8px 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Educational Chatbot</h1>
+    <label for="subjectSelect">Select Subject</label>
+    <select id="subjectSelect">
+        <option value="">--Select Subject--</option>
+    </select>
+    <div id="chatbox"></div>
+    <input type="text" id="queryInput" placeholder="Ask a question..." />
+    <button id="sendBtn">Send</button>
+
+    <script>
+        const subjectSelect = document.getElementById('subjectSelect');
+        const chatbox = document.getElementById('chatbox');
+        const queryInput = document.getElementById('queryInput');
+        const sendBtn = document.getElementById('sendBtn');
+
+        // Load subjects from server
+        fetch('/subjects')
+            .then(response => response.json())
+            .then(subjects => {
+                subjects.forEach(subject => {
+                    const option = document.createElement('option');
+                    option.value = subject;
+                    option.textContent = subject;
+                    subjectSelect.appendChild(option);
+                });
+            });
+
+        sendBtn.addEventListener('click', () => {
+            const subject = subjectSelect.value;
+            const query = queryInput.value.trim();
+            if (!subject) {
+                alert('Please select a subject.');
+                return;
+            }
+            if (!query) {
+                alert('Please enter a question.');
+                return;
+            }
+
+            chatbox.textContent += `You: ${query}\n`;
+
+            fetch('/query', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ subject, query })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    chatbox.textContent += `Error: ${data.error}\n`;
+                } else {
+                    chatbox.textContent += `Bot: ${data.answer}\n`;
+                }
+                chatbox.scrollTop = chatbox.scrollHeight;
+            })
+            .catch(err => {
+                chatbox.textContent += `Error: ${err.message}\n`;
+                chatbox.scrollTop = chatbox.scrollHeight;
+            });
+
+            queryInput.value = '';
+        });
+
+        queryInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendBtn.click();
+            }
+        });
+    </script>
+</body>
+</html>
+
