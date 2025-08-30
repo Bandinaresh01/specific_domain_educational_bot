@@ -213,6 +213,6 @@ def process_subjects(base_folder: str):
 
 if __name__ == "__main__":
     print("Starting PDF processing pipeline...")
-    PDF_BASE_PATH = "educational_pdf"
+    PDF_BASE_PATH = "../educational_pdf"
     process_subjects(PDF_BASE_PATH)
     print("Processing complete! FAISS indices saved in 'faiss_index' folder.")

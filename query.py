@@ -1,4 +1,4 @@
- =======import os
+import os
 from langchain_community.vectorstores import FAISS
 from langchain_huggingface import HuggingFaceEmbeddings
 import google.generativeai as genai
@@ -11,18 +11,6 @@ load_dotenv()
 api_key = os.getenv("GEMINI_API_KEY")
 print(f"API Key: {api_key}")
 genai.configure(api_key=api_key)
-# Load environment variables
-load_dotenv()
-
-# Configure Gemini API
-api_key = os.getenv("GEMINI_API_KEY")
-print(f"API Key: {api_key}")
-genai.configure(api_key=api_key)
-# Load environment variables
-load_dotenv()
-
-# Configure Gemini API
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 model = genai.GenerativeModel("gemini-2.0-flash")
 
 # Initialize embedding model (must match the one used during saving)
