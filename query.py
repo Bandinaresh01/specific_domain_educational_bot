@@ -61,13 +61,23 @@ def generate_answer(query: str, context: str) -> str:
         Generated answer
     """
     prompt = f"""
-    Based on the following reference material, answer the user's question.
-    If the reference material does not contain relevant information, provide your best answer based on general knowledge.
+    You are an expert educational assistant specializing in the subject matter provided. Your role is to help students understand concepts clearly and accurately based on the reference material.
 
-    Reference:
+    Instructions:
+    - Answer the question directly and comprehensively using the reference material.
+    - If the reference material lacks sufficient information, supplement with accurate general knowledge but clearly indicate when doing so.
+    - Provide explanations with examples where appropriate to aid learning.
+    - Keep answers concise yet informative, avoiding unnecessary verbosity.
+    - Structure answers logically: start with a direct answer, then explain, and end with key takeaways if relevant.
+    - Use simple language suitable for students, but maintain technical accuracy.
+    - If the question is not related to the subject, politely redirect to relevant topics.
+
+    Reference Material:
     {context}
 
-    Question: {query}
+    Student Question: {query}
+
+    Answer:
     """
     response = model.generate_content(prompt)
     return response.text

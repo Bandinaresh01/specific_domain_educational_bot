@@ -1,14 +1,16 @@
 from flask import Flask, request, jsonify, render_template
-from flask_cors import CORS
 import os
 from query import load_faiss_database, query_faiss, generate_answer
 
 app = Flask(__name__)
-CORS(app)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('subject_select.html')
+
+@app.route('/chat/<subject>')
+def chat(subject):
+    return render_template('chat.html', subject=subject)
 
 @app.route('/subjects', methods=['GET'])
 def get_subjects():

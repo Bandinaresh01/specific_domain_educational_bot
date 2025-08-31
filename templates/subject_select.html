@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Subject - Educational Chatbot</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #000814;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #caf0f8;
+        }
+        .container {
+            background: #001d3d;
+            border-radius: 15px;
+            box-shadow: 0 0 15px #00b4d8;
+            padding: 40px;
+            max-width: 800px;
+            width: 90%;
+            text-align: center;
+            border: 2px solid #00b4d8;
+        }
+        h1 {
+            color: #90e0ef;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+            text-shadow: 0 0 5px #00b4d8;
+        }
+        p {
+            color: #ade8f4;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .subject-card {
+            background: #001f3f;
+            border: 2px solid #00b4d8;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: #caf0f8;
+            display: block;
+            box-shadow: 0 0 10px #0077b6;
+        }
+        .subject-card:hover {
+            background: #00b4d8;
+            color: #000814;
+            border-color: #90e0ef;
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px #90e0ef;
+        }
+        .subject-card h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            text-transform: capitalize;
+        }
+        .subject-card p {
+            margin: 10px 0 0 0;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        .loading {
+            display: none;
+            color: #90e0ef;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Educational Chatbot</h1>
+        <p>Select a subject to start chatting and get help with your studies.</p>
+        <div id="loading" class="loading">Loading subjects...</div>
+        <div id="subjects-grid" class="subjects-grid"></div>
+    </div>
+
+    <script>
+        const subjectsGrid = document.getElementById('subjects-grid');
+        const loading = document.getElementById('loading');
+
+        async function fetchSubjects() {
+            loading.style.display = 'block';
+            try {
+                const response = await fetch('/subjects');
+                const subjects = await response.json();
+                loading.style.display = 'none';
+                subjects.forEach(subject => {
+                    const card = document.createElement('a');
+                    card.className = 'subject-card';
+                    card.href = `/chat/${subject}`;
+                    card.innerHTML = `
+                        <h3>${subject.replace(/_/g, ' ')}</h3>
+                        <p>Chat about ${subject.replace(/_/g, ' ')}</p>
+                    `;
+                    subjectsGrid.appendChild(card);
+                });
+            } catch (error) {
+                loading.textContent = 'Failed to load subjects. Please refresh the page.';
+            }
+        }
+
+        fetchSubjects();
+    </script>
+</body>
+</html>
