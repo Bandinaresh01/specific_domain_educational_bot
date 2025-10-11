@@ -60,54 +60,30 @@ def generate_answer(query: str, context: str) -> str:
     Returns:
         Generated answer
     """
-    prompt = f"""
-    You are an expert educational assistant specializing in the subject matter provided. Your role is to help students understand concepts clearly and accurately based on the reference material.
+    try:
+        prompt = f"""
+        You are an expert educational assistant specializing in the subject matter provided. Your role is to help students understand concepts clearly and accurately based on the reference material.
 
-    Instructions:
-    - Answer the question directly and comprehensively using the reference material.
-    - If the reference material lacks sufficient information, supplement with accurate general knowledge but clearly indicate when doing so.
-    - Provide explanations with examples where appropriate to aid learning.
-    - Keep answers concise yet informative, avoiding unnecessary verbosity.
-    - Structure answers logically: start with a direct answer, then explain, and end with key takeaways if relevant.
-    - Use simple language suitable for students, but maintain technical accuracy.
-    - If the question is not related to the subject, politely redirect to relevant topics.
+        Instructions:
+        - Answer the question directly and comprehensively using the reference material.
+        - If the reference material lacks sufficient information, supplement with accurate general knowledge but clearly indicate when doing so.
+        - Provide explanations with examples where appropriate to aid learning.
+        - Keep answers concise yet informative, avoiding unnecessary verbosity.
+        - Structure answers logically: start with a direct answer, then explain, and end with key takeaways if relevant.
+        - Use simple language suitable for students, but maintain technical accuracy.
+        - If the question is not related to the subject, politely redirect to relevant topics.
+        - Format your response using markdown: Use **bold** for emphasis, *italics* for terms, - for bullet points, 1. for numbered lists, and paragraphs for explanations. Ensure the output is well-structured and easy to read.
 
-    Reference Material:
-    {context}
+        Reference Material:
+        {context}
 
-    Student Question: {query}
+        Student Question: {query}
 
-    Answer:
-    """
-    response = model.generate_content(prompt)
-    return response.text
+        Answer:
+        """
+        response = model.generate_content(prompt)
+        return response.text
+    except Exception as e:
+        return f"Error generating answer: {str(e)}. Please check your GEMINI_API_KEY in .env file."
 
-def chatbot(subject: str):
-    """
-    Run the chatbot for a specific subject.
 
-    Args:
-        subject: Name of the subject
-    """
-    faiss_db = load_faiss_database(subject)
-    if not faiss_db:
-        print(f"No FAISS index found for subject '{subject}'.")
-        return
-
-    print(f"Chatbot loaded for subject: {subject}\n")
-
-    while True:
-        user_query = input("Ask a question (or type 'exit' to quit): ").strip()
-        if user_query.lower() == "exit":
-            print("Exiting.")
-            break
-
-        similar_docs = query_faiss(user_query, faiss_db)
-        context = "\n\n".join([doc.page_content for doc in similar_docs])
-
-        answer = generate_answer(user_query, context)
-        print(answer)
-
-if __name__ == "__main__":
-    subject_choice = input("Select subject: ").strip().lower()
-    chatbot(subject_choice)

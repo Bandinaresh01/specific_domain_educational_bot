@@ -1,3 +1,5 @@
+# This file is deprecated. Use preprocess.py for generating FAISS indices from actual PDF/PPT documents.
+
 import os
 from langchain_community.vectorstores import FAISS
 from langchain_community.embeddings import HuggingFaceEmbeddings
