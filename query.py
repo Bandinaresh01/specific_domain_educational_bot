@@ -7,14 +7,38 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-# Configure Gemini API
-api_key = os.getenv("GEMINI_API_KEY")
-print(f"API Key: {api_key}")
-genai.configure(api_key=api_key)
-model = genai.GenerativeModel("gemini-2.0-flash")
+# Global variables for lazy loading
+embedding_model = None
+gemini_model = None
+faiss_cache = {}  # Cache for FAISS databases per subject
 
-# Initialize embedding model (must match the one used during saving)
-embedding_model = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+def get_embedding_model():
+    global embedding_model
+    if embedding_model is None:
+        try:
+            print("Loading embedding model...")
+            embedding_model = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+            print("Embedding model loaded successfully.")
+        except Exception as e:
+            print(f"Error loading embedding model: {e}")
+            raise
+    return embedding_model
+
+def get_gemini_model():
+    global gemini_model
+    if gemini_model is None:
+        try:
+            print("Configuring Gemini API...")
+            api_key = os.getenv("GEMINI_API_KEY")
+            if not api_key:
+                raise ValueError("GEMINI_API_KEY not found in environment variables")
+            genai.configure(api_key=api_key)
+            gemini_model = genai.GenerativeModel("gemini-2.0-flash")
+            print("Gemini model configured successfully.")
+        except Exception as e:
+            print(f"Error configuring Gemini model: {e}")
+            raise
+    return gemini_model
 
 def load_faiss_database(subject: str, index_dir: str = "faiss_index"):
     """
@@ -27,10 +51,20 @@ def load_faiss_database(subject: str, index_dir: str = "faiss_index"):
     Returns:
         FAISS vector store or None if not found
     """
+    if subject in faiss_cache:
+        return faiss_cache[subject]
+
     subject_index_dir = os.path.join(index_dir, f"{subject}_latest")
     if os.path.exists(os.path.join(subject_index_dir, "index.faiss")) and os.path.exists(os.path.join(subject_index_dir, "index.pkl")):
-        faiss_db = FAISS.load_local(subject_index_dir, embedding_model, allow_dangerous_deserialization=True)
-        return faiss_db
+        try:
+            print(f"Loading FAISS database for subject: {subject}")
+            faiss_db = FAISS.load_local(subject_index_dir, get_embedding_model(), allow_dangerous_deserialization=True)
+            faiss_cache[subject] = faiss_db
+            print(f"FAISS database loaded and cached for subject: {subject}")
+            return faiss_db
+        except Exception as e:
+            print(f"Error loading FAISS database for {subject}: {e}")
+            return None
     else:
         return None
 
