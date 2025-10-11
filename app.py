@@ -43,7 +43,7 @@ def contact():
 
 @app.route('/health', methods=['GET'])
 def health():
-    return jsonify({"status": "healthy", "message": "Educational chatbot is running"})
+    return {"status": "ok"}, 200
 
 @app.route('/query', methods=['POST'])
 def query():
@@ -67,5 +67,7 @@ def query():
     except Exception as e:
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    import os
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)

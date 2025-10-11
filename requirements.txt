@@ -12,3 +12,9 @@ python-dotenv
 google-generativeai
 unstructured
 pdfplumber
+gunicorn
+transformers
+torch
+nltk
+psycopg2-binary
+Flask-SQLAlchemy
