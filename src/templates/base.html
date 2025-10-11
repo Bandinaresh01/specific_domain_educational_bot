@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Specific Domain Chatbot{% endblock %}</title>
+    <link href="{{ url_for('static', path='css/tailwind.css') }}" rel="stylesheet">
+    <script src="{{ url_for('static', path='js/htmx.js') }}" defer></script>
+</head>
+<body class="bg-gray-100">
+    <header class="bg-blue-600 text-white p-4">
+        <h1 class="text-xl">Specific Domain Chatbot</h1>
+        <nav>
+            <ul class="flex space-x-4">
+                <li><a href="{{ url_for('index') }}" class="hover:underline">Home</a></li>
+                <li><a href="{{ url_for('chat') }}" class="hover:underline">Chat</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main class="p-4">
+        {% block content %}{% endblock %}
+    </main>
+    <footer class="bg-gray-800 text-white p-4 text-center">
+        <p>&copy; {{ current_year }} Specific Domain Chatbot. All rights reserved.</p>
+    </footer>
+</body>
+</html>
