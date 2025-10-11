@@ -1,0 +1,11 @@
+FastAPI
+uvicorn
+transformers
+sentence-transformers
+faiss-cpu
+redis
+rq
+jinja2
+htmx
+tailwindcss
+PyPDF2
