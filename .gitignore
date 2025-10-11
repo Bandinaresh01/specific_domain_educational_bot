@@ -41,3 +41,6 @@ scripts/
 
 # Notebooks
 .ipynb_checkpoints
+
+# FAISS indexes (large files)
+faiss_index/

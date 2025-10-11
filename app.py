@@ -65,7 +65,9 @@ def query():
         answer = generate_answer(user_query, context)
         return jsonify({"answer": answer})
     except Exception as e:
-        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+        import traceback
+        traceback.print_exc()
+        return jsonify({"error": "Internal server error"}), 500
 
 if __name__ == "__main__":
     import os

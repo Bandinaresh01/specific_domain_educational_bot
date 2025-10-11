@@ -1,4 +1,5 @@
 import os
+import gc
 from langchain_community.vectorstores import FAISS
 from langchain_huggingface import HuggingFaceEmbeddings
 import google.generativeai as genai
@@ -19,6 +20,7 @@ def get_embedding_model():
             print("Loading embedding model...")
             embedding_model = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
             print("Embedding model loaded successfully.")
+            gc.collect()
         except Exception as e:
             print(f"Error loading embedding model: {e}")
             raise
@@ -61,6 +63,7 @@ def load_faiss_database(subject: str, index_dir: str = "faiss_index"):
             faiss_db = FAISS.load_local(subject_index_dir, get_embedding_model(), allow_dangerous_deserialization=True)
             faiss_cache[subject] = faiss_db
             print(f"FAISS database loaded and cached for subject: {subject}")
+            gc.collect()
             return faiss_db
         except Exception as e:
             print(f"Error loading FAISS database for {subject}: {e}")
@@ -68,7 +71,7 @@ def load_faiss_database(subject: str, index_dir: str = "faiss_index"):
     else:
         return None
 
-def query_faiss(query: str, faiss_db, k: int = 3):
+def query_faiss(query: str, faiss_db, k: int = 1):
     """
     Perform similarity search on the FAISS database.
 
@@ -115,7 +118,8 @@ def generate_answer(query: str, context: str) -> str:
 
         Answer:
         """
-        response = model.generate_content(prompt)
+        gemini_model = get_gemini_model()
+        response = gemini_model.generate_content(prompt)
         return response.text
     except Exception as e:
         return f"Error generating answer: {str(e)}. Please check your GEMINI_API_KEY in .env file."
