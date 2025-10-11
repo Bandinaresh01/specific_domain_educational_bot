@@ -11,5 +11,5 @@ from services.preprocessing import preprocess_all_subjects
 
 if __name__ == "__main__":
     print("Starting preprocessing of all subjects...")
-    preprocess_all_subjects()
+    preprocess_all_subjects("../educational_pdf")
     print("Preprocessing completed.")

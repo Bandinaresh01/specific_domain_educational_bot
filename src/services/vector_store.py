@@ -40,6 +40,7 @@ class VectorStore:
         self.save_texts()
 
     def save_index(self):
+        os.makedirs(os.path.dirname(self.index_path), exist_ok=True)
         faiss.write_index(self.index, self.index_path)
 
     def save_texts(self):

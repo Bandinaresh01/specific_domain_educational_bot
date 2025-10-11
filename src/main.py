@@ -25,5 +25,5 @@ async def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
 # Include API routes
-from api.chatbot import router as chatbot_router
+from .api.chatbot import router as chatbot_router
 app.include_router(chatbot_router, prefix="/api", tags=["chatbot"])

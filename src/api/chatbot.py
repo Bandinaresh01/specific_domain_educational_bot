@@ -16,7 +16,7 @@ class ChatResponse(BaseModel):
 
 @router.get("/subjects", response_model=List[str])
 async def list_subjects():
-    pdf_dir = "educational_pdf"
+    pdf_dir = "../educational_pdf"
     if not os.path.exists(pdf_dir):
         return []
     subjects = [d for d in os.listdir(pdf_dir) if os.path.isdir(os.path.join(pdf_dir, d))]
