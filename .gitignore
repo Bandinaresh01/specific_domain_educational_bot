@@ -36,5 +36,11 @@ Thumbs.db
 # Educational PDFs (large data files)
 educational_pdfs/
 
+# Data and indices (large files)
+data/
+
+# Scripts (if not needed in repo)
+scripts/
+
 # Notebooks
 .ipynb_checkpoints
