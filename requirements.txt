@@ -1,9 +1,11 @@
 flask
+flask-cors
+langchain
+langchain-community
+langchain-huggingface
 gunicorn
 faiss-cpu
 sentence-transformers
-PyMuPDF
-pdfplumber
 google-generativeai
 python-dotenv
 numpy
